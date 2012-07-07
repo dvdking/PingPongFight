@@ -9,16 +9,20 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
+using PingPongFight.GameObjects;
+using PingPongFight.Helpres;
 
 namespace PingPongFight
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        private PongBat playerOne;
+        private Ball ball;
+        private Texture2D ballTexture;
+        private Texture2D playerOneTexture;
 
         public Game1()
         {
@@ -31,13 +35,6 @@ namespace PingPongFight
             // Extend battery life under lock.
             InactiveSleepTime = TimeSpan.FromSeconds(1);
         }
-
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -45,52 +42,54 @@ namespace PingPongFight
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            playerOneTexture = Content.Load<Texture2D>("PlayerOneBat");
+            ballTexture = Content.Load<Texture2D>("BallTexture");
+            playerOne = new PongBat(this, spriteBatch, playerOneTexture) {Speed = 0.3f};
+            ball = new Ball(this, spriteBatch, ballTexture)
+                       {
+                           Position = new Vector2(450,150),
+                           Direction = RandomHelper.GetRandomDirection(),
+                           Speed = 0.1f
+                       };
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+            TouchCollection touchCollection = TouchPanel.GetState();
+            foreach (TouchLocation tl in touchCollection)
+            {
+                if ((tl.State == TouchLocationState.Pressed)
+                        || (tl.State == TouchLocationState.Moved))
+                {
+                    playerOne.MoveTo(tl.Position);
+                }
+            }
 
-            // TODO: Add your update logic here
+            playerOne.Update(gameTime);
+            ball.Update(gameTime);
+
+            ball.CheckHit(playerOne.BoundsRectangle);
 
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            playerOne.Draw(gameTime);
+            ball.Draw(gameTime);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
