@@ -52,7 +52,8 @@ namespace PingPongFight
                        {
                            Position = new Vector2(450,150),
                            Direction = RandomHelper.GetRandomDirection(),
-                           Speed = 0.1f
+                           Speed = 0.1f,
+                           MaxHeight = 200
                        };
         }
 

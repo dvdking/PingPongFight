@@ -9,6 +9,8 @@ namespace PingPongFight.GameObjects
 {
     class Ball:GameObject
     {
+        public int MinHeight, MaxHeight;
+
         public Vector2 Direction { get; set; }
         public float Speed { get; set; }
 
@@ -25,10 +27,16 @@ namespace PingPongFight.GameObjects
             if(!BoundsRectangle.Intersects(bound)) return;
 
                 Direction = new Vector2(-Direction.X, Direction.Y);
+
         }
 
         public override void Update(GameTime gameTime)
         {
+            if(Y + Width > MaxHeight || Y < MinHeight)
+            {
+                Direction = new Vector2(Direction.X, -Direction.Y);
+            }
+
             Velocity = Direction*Speed*gameTime.ElapsedGameTime.Milliseconds;
             Position += Velocity;
             base.Update(gameTime);
