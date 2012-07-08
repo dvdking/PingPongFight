@@ -65,9 +65,14 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AIControll.cs" />
+    <Compile Include="Controllers\GamerControll.cs" />
+    <Compile Include="Controllers\IControll.cs" />
+    <Compile Include="Controllers\Player.cs" />
     <Compile Include="GameObjects\Ball.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\PongBat.cs" />
+    <Compile Include="Helpres\CollisionHelper.cs" />
     <Compile Include="Helpres\RandomHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AppManifest.xml">

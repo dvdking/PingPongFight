@@ -101,18 +101,8 @@ namespace PingPongFight.GameObjects
             Height = texture.Height;
         }
 
-        public override void Initialize()
+        public virtual void CheckHit(Rectangle bound)
         {
-            // TODO: Add your initialization code here
-
-            base.Initialize();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            // TODO: Add your update code here
-
-            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)

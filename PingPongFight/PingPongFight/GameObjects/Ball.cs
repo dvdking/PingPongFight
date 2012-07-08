@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PingPongFight.GameObjects
 {
-    class Ball:GameObject
+    public class Ball:GameObject
     {
         public int MinHeight, MaxHeight;
 
@@ -22,7 +22,7 @@ namespace PingPongFight.GameObjects
         {
         }
 
-        public void CheckHit(Rectangle bound)
+        public override void CheckHit(Rectangle bound)
         {
             if(!BoundsRectangle.Intersects(bound)) return;
 

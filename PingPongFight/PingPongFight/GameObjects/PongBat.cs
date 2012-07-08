@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using PingPongFight.Controllers;
 
 
 namespace PingPongFight.GameObjects
@@ -15,6 +16,9 @@ namespace PingPongFight.GameObjects
 
     public class PongBat :GameObject
     {
+        public IControll Control { get; set; }
+    
+
         public float Speed { get; set; }
 
         private Vector2 NextPosition;
@@ -23,6 +27,12 @@ namespace PingPongFight.GameObjects
             : base(game, spriteBatch, texture)
         {
 
+        }
+
+        public void SetControll(IControll control)
+        {
+            Control = control;
+            control.Bat = this;
         }
 
         public void MoveTo(Vector2 position)
@@ -39,6 +49,8 @@ namespace PingPongFight.GameObjects
         public override void Update(GameTime gameTime)
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            Control.Update(gameTime);
 
             CenterX = MovingTowards(CenterX, NextPosition.X, dt);
             CenterY = MovingTowards(CenterY, NextPosition.Y, dt);
