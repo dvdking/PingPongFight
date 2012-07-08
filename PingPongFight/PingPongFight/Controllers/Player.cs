@@ -21,6 +21,7 @@ namespace PingPongFight.Controllers
         public Player(PongBat bat)
         {
             Bat = bat;
+            Health = 100;
         }
 
         public void Update(GameTime gameTime)

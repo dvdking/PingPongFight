@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using PingPongFight.Controllers;
+using PingPongFight.GUI;
 using PingPongFight.GameObjects;
 using PingPongFight.Helpres;
 
@@ -20,11 +21,15 @@ namespace PingPongFight
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private GUIControl guiControl;
+        private StatusBar _HealthBar;
+
         private Player playerOne;
         private Player playerTwo;
         private Ball ball;
         private Texture2D ballTexture;
         private Texture2D playerOneTexture;
+        private Texture2D statusBarTexture;
 
         public Game1()
         {
@@ -50,15 +55,29 @@ namespace PingPongFight
             spriteBatch = new SpriteBatch(GraphicsDevice);
             playerOneTexture = Content.Load<Texture2D>("PlayerOneBat");
             ballTexture = Content.Load<Texture2D>("BallTexture");
-            PongBat batOne = new PongBat(this, spriteBatch, playerOneTexture) {Speed = 0.3f};
-            PongBat batTwo = new PongBat(this, spriteBatch, playerOneTexture) { Speed = 0.3f, Position = new Vector2(300, 150) };
+            statusBarTexture = Content.Load<Texture2D>("HealthBar");
+            PongBat batOne = new PongBat(this, spriteBatch, playerOneTexture)
+                                 {
+                                     Speed = 0.3f,
+                                     NextPosition = new Vector2(64, 300),
+                                     DoNotAllowChangePositionUntilNextPositionReached = true
+                                 };
+            PongBat batTwo = new PongBat(this, spriteBatch, playerOneTexture) 
+            {
+                Speed = 0.3f, 
+                NextPosition = new Vector2(700, 150),
+                DoNotAllowChangePositionUntilNextPositionReached = true
+            };
             ball = new Ball(this, spriteBatch, ballTexture)
                        {
-                           Position = new Vector2(450,150),
+                           StartPosition = new Vector2(400,240),
+                           Countdown = 2500f,
                            Direction = RandomHelper.GetRandomDirection(),
-                           Speed = 0.1f,
-                           MaxHeight = 200,
+                           Speed = 0.3f,
+                           MaxHeight = 480,
+                           MaxWidth = 800
                        };
+            ball.Reset();
 
             batOne.SetControll(new GamerControll(ball));
             batTwo.SetControll(new AIControll(ball));
@@ -69,6 +88,14 @@ namespace PingPongFight
             CollisionHelper.GameObjects.Add(batOne);
             CollisionHelper.GameObjects.Add(batTwo);
             CollisionHelper.GameObjects.Add(ball);
+
+            guiControl = new GUIControl(spriteBatch);
+            _HealthBar = new StatusBar(statusBarTexture)
+                             {
+                                 Width = statusBarTexture.Width,
+                                 Height = statusBarTexture.Height
+                             };
+            guiControl.Add(_HealthBar);
         }
 
         protected override void UnloadContent()
@@ -86,6 +113,10 @@ namespace PingPongFight
             ball.Update(gameTime);
 
             CollisionHelper.Update(gameTime);
+            float percent = playerOne.Health/100;
+            _HealthBar.Progress = percent > 0? percent: 0;
+
+            guiControl.Update(gameTime);
             //ball.CheckHit(playerOne.BoundsRectangle);
             //ball.CheckHit(playerTwo.BoundsRectangle);
             base.Update(gameTime);
@@ -93,11 +124,12 @@ namespace PingPongFight
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.SandyBrown);
             spriteBatch.Begin();
             playerOne.Draw(gameTime);
             playerTwo.Draw(gameTime);
             ball.Draw(gameTime);
+            guiControl.Draw(gameTime);
             spriteBatch.End();
 
             base.Draw(gameTime);

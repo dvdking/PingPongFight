@@ -21,7 +21,8 @@ namespace PingPongFight.GameObjects
 
         public float Speed { get; set; }
 
-        private Vector2 NextPosition;
+        public Vector2 NextPosition;
+        public bool DoNotAllowChangePositionUntilNextPositionReached = false;
 
         public PongBat(Game game, SpriteBatch spriteBatch, Texture2D texture)
             : base(game, spriteBatch, texture)
@@ -37,7 +38,8 @@ namespace PingPongFight.GameObjects
 
         public void MoveTo(Vector2 position)
         {
-            NextPosition = position;
+            if(!DoNotAllowChangePositionUntilNextPositionReached)
+                NextPosition = position;
         }
 
         public override void Initialize()
@@ -54,6 +56,10 @@ namespace PingPongFight.GameObjects
 
             CenterX = MovingTowards(CenterX, NextPosition.X, dt);
             CenterY = MovingTowards(CenterY, NextPosition.Y, dt);
+            if(NextPosition == CenterPosition)
+            {
+                DoNotAllowChangePositionUntilNextPositionReached = false;
+            }
 
             base.Update(gameTime);
         }

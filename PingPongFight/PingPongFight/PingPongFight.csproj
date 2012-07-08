@@ -72,6 +72,9 @@
     <Compile Include="GameObjects\Ball.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\PongBat.cs" />
+    <Compile Include="GUI\GUIControl.cs" />
+    <Compile Include="GUI\GUIElement.cs" />
+    <Compile Include="GUI\StatusBar.cs" />
     <Compile Include="Helpres\CollisionHelper.cs" />
     <Compile Include="Helpres\RandomHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
